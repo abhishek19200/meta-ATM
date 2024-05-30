@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-//import "hardhat/console.sol";
-
 contract Assessment {
     address payable public owner;
     uint256 public balance;
@@ -56,5 +54,47 @@ contract Assessment {
 
         // emit the event
         emit Withdraw(_withdrawAmount);
+    }
+
+    function calculateTotalSavings(
+        uint256 initialDeposit,
+        uint256 monthlyContribution,
+        uint256 periodInMonths,
+        uint256 annualPercentageYield
+    ) public pure returns (uint256) {
+        uint256 monthlyRate = annualPercentageYield / 100 / 12;
+        uint256 totalContribution = initialDeposit;
+        uint256 interestEarned = 0;
+
+        for (uint256 i = 0; i < periodInMonths; i++) {
+            interestEarned += (totalContribution + monthlyContribution) * monthlyRate;
+            totalContribution += monthlyContribution;
+        }
+
+        uint256 finalAmount = totalContribution + interestEarned;
+        return finalAmount;
+    }
+
+    function getSavingsData(
+        uint256 initialDeposit,
+        uint256 monthlyContribution,
+        uint256 periodInMonths,
+        uint256 annualPercentageYield
+    ) public pure returns (
+        uint256 totalContribution,
+        uint256 interestEarned,
+        uint256 finalAmount
+    ) {
+        uint256 monthlyRate = annualPercentageYield / 100 / 12;
+        totalContribution = initialDeposit;
+        interestEarned = 0;
+
+        for (uint256 i = 0; i < periodInMonths; i++) {
+            interestEarned += (totalContribution + monthlyContribution) * monthlyRate;
+            totalContribution += monthlyContribution;
+        }
+
+        finalAmount = totalContribution + interestEarned;
+        return (totalContribution, interestEarned, finalAmount);
     }
 }
